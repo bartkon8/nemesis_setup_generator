@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  varinat: one
+  players: 1
+  bag: 
+  conditions: MyText
+
+two:
+  varinat: two
+  players: 1
+  bag: 
+  conditions: MyText

@@ -1,0 +1,28 @@
+<div class="max-w-xl mx-auto space-y-4">
+  <h1 class="text-xl font-bold">Nemesis Setup Generator</h1>
+
+  <label class="block">Liczba graczy
+    <input id="pc" type="number" min="1" max="6" value="4" class="border p-2 rounded w-24">
+  </label>
+  <label class="block">Ile postaci (domyślnie 6)
+    <input id="cc" type="number" min="1" max="10" value="6" class="border p-2 rounded w-24">
+  </label>
+
+  <button id="roll" class="px-4 py-2 rounded bg-black text-white">Losuj setup</button>
+  <pre id="out" class="bg-gray-100 p-4 rounded whitespace-pre-wrap"></pre>
+</div>
+
+<script type="module">
+  const btn = document.getElementById('roll'), out = document.getElementById('out')
+  btn.addEventListener('click', async () => {
+    const pc = +document.getElementById('pc').value || 4
+    const cc = +document.getElementById('cc').value || 6
+    const res = await fetch('/setups', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ player_count: pc, char_count: cc })
+    })
+    const data = await res.json()
+    out.textContent = JSON.stringify(data, null, 2)
+  })
+</script>

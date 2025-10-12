@@ -3,7 +3,7 @@ class SetupsController < ApplicationController
   protect_from_forgery with: :null_session
 
   def create
-    player_count = params[:player_count].presence&.to_i || 4
+    player_count = params[:player_count].presence&.to_i || 5
     char_count   = params[:char_count].presence&.to_i || 6
 
     result = SetupSelector.new(player_count:, char_count:).call

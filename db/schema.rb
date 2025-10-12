@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_05_094313) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_05_105703) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,13 +60,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_05_094313) do
     t.text "conditions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "player_count", default: 4, null: false
+    t.jsonb "bag_json", default: {}, null: false
+    t.index ["variant_id", "player_count"], name: "index_setups_on_variant_id_and_player_count", unique: true
     t.index ["variant_id"], name: "index_setups_on_variant_id"
   end
 
   create_table "variants", force: :cascade do |t|
     t.string "name"
     t.bigint "game_id", null: false
-    t.bigint "expansion_id", null: false
+    t.bigint "expansion_id"
     t.integer "priority"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

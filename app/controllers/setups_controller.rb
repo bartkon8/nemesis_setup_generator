@@ -2,6 +2,10 @@
 class SetupsController < ApplicationController
   protect_from_forgery with: :null_session
 
+  def new
+    # tylko wyświetla widok z UI do losowania
+  end
+
   def create
     player_count = params[:player_count].presence&.to_i || 5
     char_count   = params[:char_count].presence&.to_i || 6

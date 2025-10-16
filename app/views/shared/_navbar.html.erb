@@ -3,8 +3,8 @@
     <%= link_to "Nemesis Setup", root_path, class: "brand" %>
 
     <ul class="nav-links">
-      <li><span class="nav-link">Losuj</span></li>
-      <li><span class="nav-link">Wyszukaj</span></li>
+      <li><%= link_to "Losuj", new_setup_path, class: "nav-link" %></li>
+      <li><%= link_to "Wyszukaj", search_path, class: "nav-link" %></li>
 
       <li class="has-dropdown">
         <button type="button" class="nav-link">Dane ▾</button>

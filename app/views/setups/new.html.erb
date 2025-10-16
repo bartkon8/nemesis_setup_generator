@@ -1,0 +1,95 @@
+<div class="max-w-2xl mx-auto space-y-4">
+  <h1 class="text-xl font-bold">Losuj setup</h1>
+
+  <div class="grid grid-cols-2 gap-4">
+    <label class="block">Liczba graczy
+      <input id="pc" type="number" min="1" max="6" value="4" class="border p-2 rounded w-24">
+    </label>
+    <label class="block">Ile postaci (domyślnie 6)
+      <input id="cc" type="number" min="1" max="10" value="6" class="border p-2 rounded w-24">
+    </label>
+  </div>
+
+  <button id="roll" class="border px-4 py-2 rounded bg-black text-white">Losuj setup</button>
+
+  <!-- karta z wynikiem (bez tła/grafik) -->
+  <div id="card" class="hidden rounded-2xl shadow bg-white border">
+    <div class="p-4 space-y-4">
+      <div>
+        <div id="variantTitle" class="text-lg font-bold"></div>
+        <div id="variantSub" class="text-sm text-slate-600"></div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-1">Postacie</h3>
+        <ul id="chars" class="list-disc pl-5 grid md:grid-cols-2 gap-1"></ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold mb-1">Worek (setup)</h3>
+        <table class="w-full text-sm"><tbody id="bag"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <p id="err" class="text-sm text-red-600"></p>
+</div>
+
+<script type="module">
+  const $ = s => document.querySelector(s)
+  const btn   = $('#roll')
+  const card  = $('#card')
+  const err   = $('#err')
+  const chars = $('#chars')
+  const bag   = $('#bag')
+  const vTitle= $('#variantTitle')
+  const vSub  = $('#variantSub')
+
+  btn.addEventListener('click', async () => {
+    // reset UI
+    err.textContent = ""
+    card.classList.add('hidden')
+    chars.innerHTML = ""
+    bag.innerHTML = ""
+
+    const pc = +document.getElementById('pc').value || 4
+    const cc = +document.getElementById('cc').value || 6
+
+    // wyślij żądanie do API
+    const res = await fetch('<%= setups_path %>', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ player_count: pc, char_count: cc })
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      err.textContent = data.error || "Błąd"
+      return
+    }
+
+    // wypełnij wynik
+    vTitle.textContent = data.variant?.name || "Wariant"
+    vSub.textContent   = `${pc} graczy • ${cc} postaci`
+
+    ;(data.characters || []).forEach(c => {
+      const li = document.createElement('li')
+      li.textContent = c.name
+      chars.appendChild(li)
+    })
+
+    const entries = Object.entries(data.setup || {})
+    if (entries.length === 0) {
+      bag.innerHTML = "<tr><td class='py-1 text-slate-500'>Brak danych setupu</td></tr>"
+    } else {
+      entries.forEach(([k, v]) => {
+        const tr = document.createElement('tr')
+        tr.innerHTML = `<td class="py-1 pr-2 font-medium">${k}</td><td class="py-1">${v}</td>`
+        bag.appendChild(tr)
+      })
+    }
+
+    card.classList.remove('hidden')
+  })
+</script>

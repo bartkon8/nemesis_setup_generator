@@ -1,4 +1,48 @@
-<div>
-  <h1 class="font-bold text-4xl">Search</h1>
-  <p class="text-slate-600">Wyszukiwanie demo</p>
+<div class="max-w-3xl mx-auto space-y-4">
+  <h1 class="text-xl font-bold">Wyszukiwarka</h1>
+
+  <form method="get" action="<%= search_path %>" class="flex gap-2">
+    <input type="text" name="q" value="<%= params[:q] %>" placeholder="Szukaj wariantu, postaci, gry..." class="border p-2 rounded flex-1">
+    <button class="btn-secondary" type="submit">Szukaj</button>
+  </form>
+
+  <% if params[:q].present? %>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <h2 class="font-semibold mb-2">Warianty</h2>
+        <ul class="space-y-1">
+          <% (@variants || []).each do |v| %>
+            <li class="p-2 bg-white rounded border">
+              <div class="text-sm text-slate-500"><%= v.game&.name %> <%= "– #{v.expansion.name}" if v.expansion %></div>
+              <div class="font-medium"><%= v.name %></div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div>
+        <h2 class="font-semibold mb-2">Postacie</h2>
+        <ul class="space-y-1">
+          <% (@characters || []).each do |c| %>
+            <li class="p-2 bg-white rounded border"><%= c.name %></li>
+          <% end %>
+        </ul>
+      </div>
+      <div>
+        <h2 class="font-semibold mb-2">Gry</h2>
+        <ul class="space-y-1">
+          <% (@games || []).each do |g| %>
+            <li class="p-2 bg-white rounded border"><%= g.name %></li>
+          <% end %>
+        </ul>
+      </div>
+      <div>
+        <h2 class="font-semibold mb-2">Dodatki</h2>
+        <ul class="space-y-1">
+          <% (@expansions || []).each do |e| %>
+            <li class="p-2 bg-white rounded border"><%= e.name %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
 </div>

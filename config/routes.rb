@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :character_variants
+  resources :characters
+  resources :variants
+  resources :expansions
   resources :games
   get 'search/index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -10,8 +14,12 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#welcome"
 
-  resources :setups, only: [:new, :create]
+  resources :setups
   get "/search", to: "search#index", as: :search
   
   resources :games
+  resources :expansions
+  resources :variants
+  resources :characters
+  resources :character_variants
 end

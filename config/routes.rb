@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :games
   get 'search/index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -9,7 +10,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#welcome"
 
-  get "/search", to: "search#index", as: :search
   resources :setups, only: [:new, :create]
-
+  get "/search", to: "search#index", as: :search
+  
+  resources :games
 end

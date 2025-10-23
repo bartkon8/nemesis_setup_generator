@@ -10,11 +10,11 @@
         <button type="button" class="nav-link">Dane ▾</button>
         <ul class="dropdown">
           <li><%= link_to "Gry", games_path, class: "dropdown-link" %></li>
-          <li>Dodatki</li>
-          <li>Warianty</li>
-          <li>Postacie</li>
-          <li>Postać↔Wariant</li>
-          <li>Setups</li>
+          <li><%= link_to "Dodatki", expansions_path, class: "dropdown-link" %></li>
+          <li><%= link_to "Warianty", variants_path, class: "dropdown-link" %></li>
+          <li><%= link_to "Postacie", characters_path, class: "dropdown-link" %></li>
+          <li><%= link_to "Postać↔Wariant", character_variants_path, class: "dropdown-link" %></li>
+          <li><%= link_to "Setups", setups_path, class: "dropdown-link" %></li>
         </ul>
       </li>
     </ul>

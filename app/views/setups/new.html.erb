@@ -10,9 +10,9 @@
     </label>
   </div>
 
-  <button id="roll" class="border px-4 py-2 rounded bg-black text-white">Losuj setup</button>
+  <!-- ważne: type="button", żeby nie triggerować submit -->
+  <button id="roll" type="button" class="btn-primary">Losuj setup</button>
 
-  <!-- karta z wynikiem (bez tła/grafik) -->
   <div id="card" class="hidden rounded-2xl shadow bg-white border">
     <div class="p-4 space-y-4">
       <div>
@@ -32,64 +32,103 @@
     </div>
   </div>
 
-  <p id="err" class="text-sm text-red-600"></p>
+  <div id="err" class="hidden alert-error"></div>
 </div>
 
 <script type="module">
   const $ = s => document.querySelector(s)
   const btn   = $('#roll')
   const card  = $('#card')
-  const err   = $('#err')
+  const errEl = $('#err')
   const chars = $('#chars')
   const bag   = $('#bag')
   const vTitle= $('#variantTitle')
   const vSub  = $('#variantSub')
 
+  function showError(msg) {
+    errEl.textContent = msg || "Wystąpił błąd."
+    errEl.classList.remove('hidden')
+    card.classList.add('hidden')
+    errEl.scrollIntoView({ behavior: "smooth", block: "center" })
+  }
+  function hideError() {
+    errEl.textContent = ""
+    errEl.classList.add('hidden')
+  }
+
   btn.addEventListener('click', async () => {
-    // reset UI
-    err.textContent = ""
+    hideError()
     card.classList.add('hidden')
     chars.innerHTML = ""
     bag.innerHTML = ""
 
-    const pc = +document.getElementById('pc').value || 4
-    const cc = +document.getElementById('cc').value || 6
+    // bezpieczna konwersja na liczby całkowite
+    const pc = Math.max(1, parseInt(document.getElementById('pc').value, 10) || 4)
+    const cc = Math.max(1, parseInt(document.getElementById('cc').value, 10) || 6)
 
-    // wyślij żądanie do API
-    const res = await fetch('<%= setups_path %>', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ player_count: pc, char_count: cc })
-    })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      err.textContent = data.error || "Błąd"
+    // walidacja po stronie klienta – nie uderzaj do API, gdy warunek oczywiście błędny
+    if (pc > cc) {
+      showError("Liczba graczy nie może być większa niż liczba postaci")
       return
     }
 
-    // wypełnij wynik
-    vTitle.textContent = data.variant?.name || "Wariant"
-    vSub.textContent   = `${pc} graczy • ${cc} postaci`
+    // stan ładowania
+    const prevText = btn.textContent
+    btn.textContent = "Losuję…"
+    btn.disabled = true
 
-    ;(data.characters || []).forEach(c => {
-      const li = document.createElement('li')
-      li.textContent = c.name
-      chars.appendChild(li)
-    })
-
-    const entries = Object.entries(data.setup || {})
-    if (entries.length === 0) {
-      bag.innerHTML = "<tr><td class='py-1 text-slate-500'>Brak danych setupu</td></tr>"
-    } else {
-      entries.forEach(([k, v]) => {
-        const tr = document.createElement('tr')
-        tr.innerHTML = `<td class="py-1 pr-2 font-medium">${k}</td><td class="py-1">${v}</td>`
-        bag.appendChild(tr)
+    try {
+      const res  = await fetch('<%= setups_path(format: :json) %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ player_count: pc, char_count: cc })
       })
-    }
 
-    card.classList.remove('hidden')
+      let data = {}
+      const ct = res.headers.get('Content-Type') || ''
+      if (ct.includes('application/json')) {
+        try { data = await res.json() } catch (_) { data = {} }
+      } else {
+        // fallback gdyby backend zwrócił non-JSON
+        data = { error: `Błąd (${res.status})` }
+      }
+
+      if (!res.ok) {
+        showError(data.error || `Błąd (${res.status}) podczas losowania.`)
+        return
+      }
+
+      // sukces
+      vTitle.textContent = data.variant?.name || "Wariant"
+      vSub.textContent   = `${pc} graczy • ${cc} postaci`
+
+      ;(data.characters || []).forEach(c => {
+        const li = document.createElement('li')
+        li.textContent = c.name
+        chars.appendChild(li)
+      })
+
+      const entries = Object.entries(data.setup || {})
+      if (entries.length === 0) {
+        bag.innerHTML = "<tr><td class='py-1' style='color:#6b7280'>Brak danych setupu</td></tr>"
+      } else {
+        entries.forEach(([k, v]) => {
+          const tr = document.createElement('tr')
+          tr.innerHTML = `<td class="py-1 pr-2" style="font-weight:600">${k}</td><td class="py-1">${v}</td>`
+          bag.appendChild(tr)
+        })
+      }
+
+      card.classList.remove('hidden')
+    } catch (e) {
+      showError("Brak połączenia z serwerem.")
+      console.error(e)
+    } finally {
+      btn.textContent = prevText
+      btn.disabled = false
+    }
   })
 </script>

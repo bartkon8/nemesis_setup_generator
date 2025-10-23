@@ -58,12 +58,10 @@ class ExpansionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_expansion
       @expansion = Expansion.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def expansion_params
       params.require(:expansion).permit(:name)
     end

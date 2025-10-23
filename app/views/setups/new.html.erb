@@ -10,7 +10,6 @@
     </label>
   </div>
 
-  <!-- ważne: type="button", żeby nie triggerować submit -->
   <button id="roll" type="button" class="btn-primary">Losuj setup</button>
 
   <div id="card" class="hidden rounded-2xl shadow bg-white border">
@@ -62,17 +61,14 @@
     chars.innerHTML = ""
     bag.innerHTML = ""
 
-    // bezpieczna konwersja na liczby całkowite
     const pc = Math.max(1, parseInt(document.getElementById('pc').value, 10) || 4)
     const cc = Math.max(1, parseInt(document.getElementById('cc').value, 10) || 6)
 
-    // walidacja po stronie klienta – nie uderzaj do API, gdy warunek oczywiście błędny
     if (pc > cc) {
       showError("Liczba graczy nie może być większa niż liczba postaci")
       return
     }
 
-    // stan ładowania
     const prevText = btn.textContent
     btn.textContent = "Losuję…"
     btn.disabled = true
@@ -92,7 +88,6 @@
       if (ct.includes('application/json')) {
         try { data = await res.json() } catch (_) { data = {} }
       } else {
-        // fallback gdyby backend zwrócił non-JSON
         data = { error: `Błąd (${res.status})` }
       }
 
@@ -101,7 +96,6 @@
         return
       }
 
-      // sukces
       vTitle.textContent = data.variant?.name || "Wariant"
       vSub.textContent   = `${pc} graczy • ${cc} postaci`
 

@@ -58,12 +58,10 @@ class CharacterVariantsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_character_variant
       @character_variant = CharacterVariant.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def character_variant_params
       params.require(:character_variant).permit(:character_id, :variant_id, :priority)
     end

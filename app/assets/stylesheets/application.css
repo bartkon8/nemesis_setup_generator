@@ -2,7 +2,7 @@
    GLOBAL / RESET
 ======================================== */
 html, body { margin: 0; padding: 0; }
-button { cursor: pointer; }  /*globalnie: kursor „rączka” dla wszystkich <button> */
+button { cursor: pointer; } 
 .hidden { display: none !important; }
 
 /* ========================================
@@ -66,10 +66,10 @@ button { cursor: pointer; }  /*globalnie: kursor „rączka” dla wszystkich <b
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   min-width: 200px;
   padding: 6px 0;
-  display: none; /* ukryte domyślnie */
+  display: none; 
 }
 .has-dropdown:hover .dropdown {
-  display: block; /* pokaż na hover rodzica */
+  display: block; 
 }
 .dropdown li {
   padding: 8px 12px;
@@ -98,7 +98,7 @@ button { cursor: pointer; }  /*globalnie: kursor „rączka” dla wszystkich <b
   border-radius: 8px;
   font-weight: 600;
   text-decoration: none;
-  cursor: pointer; /* ← rączka także dla linków-stylizowanych-przycisków */
+  cursor: pointer; 
 }
 .btn-primary {
   background: #000;
@@ -119,9 +119,9 @@ button { cursor: pointer; }  /*globalnie: kursor „rączka” dla wszystkich <b
     ALERTS 
 ===================================== */
 .alert-error {
-  border: 1px solid #fecaca;     /* jasnoczerwony */
-  background: #fee2e2;           /* tło błędu */
-  color: #7f1d1d;                /* ciemnoczerwony tekst */
+  border: 1px solid #fecaca;   
+  background: #fee2e2;           
+  color: #7f1d1d;                
   border-radius: 8px;
   padding: 10px 12px;
   margin-top: 8px;
